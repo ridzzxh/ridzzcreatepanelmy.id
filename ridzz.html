@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Akun Panel Pterodactyl</title>
+    <style>
+        body {
+            background: url('https://img1.pixhost.to/images/7134/620903555_vinzx.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .panel-form, .login-form {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        input {
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #00b894;
+            color: white;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Form -->
+    <div class="login-form" id="loginForm">
+        <h1>Masuk</h1>
+        <input type="text" id="loginUsername" placeholder="Masukkan Username" required>
+        <input type="password" id="loginPassword" placeholder="Masukkan Password" required>
+        <button onclick="checkLogin()">Masuk</button>
+        <div class="result" id="loginResult"></div>
+    </div>
+
+    <!-- Create Account Form -->
+    <div class="panel-form" id="createAccountSection" style="display:none;">
+        <h1>Buat Akun Panel Pterodactyl</h1>
+        <form id="createAccountForm">
+            <input type="text" id="username" name="username" placeholder="Masukkan Username" required>
+            <button type="submit">Buat Akun</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function checkLogin() {
+            const loginUsername = document.getElementById('loginUsername').value;
+            const loginPassword = document.getElementById('loginPassword').value;
+            const loginResult = document.getElementById('loginResult');
+
+            if (loginUsername === "ridzz" && loginPassword === "ridzzepep") {
+                document.getElementById('loginForm').style.display = "none";
+                document.getElementById('createAccountSection').style.display = "block";
+            } else {
+                loginResult.innerText = "❌ Username atau Password salah.";
+            }
+        }
+
+        document.getElementById('createAccountForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const resultBox = document.getElementById('result');
+            resultBox.innerText = "Memproses akun...";
+
+            fetch("https://eppinhostpublic.private-shop.my.id/create-user-proxy", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username: username })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultBox.innerHTML = `✅ Akun berhasil dibuat!<br>Login di: <a style="color:#00ffcc" href="https://eppinhostpublic.private-shop.my.id" target="_blank">Panel</a>`;
+                } else {
+                    resultBox.innerText = "❌ Gagal membuat akun. " + (data.message || "");
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                resultBox.innerText = "❌ Terjadi kesalahan pada server.";
+            });
+        });
+    </script>
+
+</body>
+</html>
